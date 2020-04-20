@@ -376,6 +376,7 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     """
 
     # query all unread notifications for this user since the timestamp
+    log.info("fetching user notificaitons..........")
     notifications = get_notifications_for_user(
         user_id,
         filters={
@@ -389,7 +390,7 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
             'select_related': True,  # make sure we do JOINs on the initial query
         }
     )
-
+    log.info("fetching notification_groups..........")
     notification_groups = render_notifications_by_type(notifications)
 
     # As an option, don't send an email at all if there are no
