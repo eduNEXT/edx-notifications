@@ -245,6 +245,7 @@ def send_notifications_digest(from_timestamp, to_timestamp, preference_name, sub
             unread_only=unread_only
         )
 
+    log.info("digests_sent ....... %s", digests_sent)
     return digests_sent
 
 
@@ -341,6 +342,7 @@ def send_notifications_namespace_digest(namespace, from_timestamp, to_timestamp,
                 unread_only=unread_only
             )
 
+    log.info("digests_sent2 ............ %s", digests_sent)
     return digests_sent
 
 
@@ -395,6 +397,8 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     if not notification_groups and const.NOTIFICATION_DONT_SEND_EMPTY_DIGEST:
         log.info('Digest email for %s is empty. Not sending...', email)
         return 0
+    else:
+        log.info("NOT empty ..... proceeding")
 
     context = {
         'namespace_display_name': namespace_info['display_name'],
@@ -402,11 +406,14 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     }
 
     # render the notifications html template
+    log.info("notifications_html ... checking ..... ")
     notifications_html = render_to_string("django/digests/unread_notifications_inner.html", context)
+    log.info("notifications_html ... checked ..... proceeding")
 
     # create the image dictionary to store the
     # img_path, unique id and title for the image.
     branded_logo = dict(title='Logo', path=const.NOTIFICATION_BRANDED_DEFAULT_LOGO, cid=str(uuid.uuid4()))
+    log.info("branded_logo ....... %s", branded_logo)
 
     context = {
         'branded_logo': branded_logo['cid'],
@@ -417,9 +424,12 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
         'rendered_notifications': notifications_html
     }
     # render the mail digest template.
+    log.info("email_body .......checking ....")
     email_body = with_inline_css(
         render_to_string("django/digests/branded_notifications_outer.html", context)
     )
+
+    log.info("email_body ....... checked ... processing")
 
     html_part = MIMEMultipart(_subtype='related')
     html_part.attach(MIMEText(email_body, _subtype='html'))
@@ -434,7 +444,6 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     subject = subject.format(display_name=namespace_info['display_name'])
 
     msg = EmailMessage(subject, '', from_email, [email])
-    log.info('from_email: %s', from_email)
     msg.attach(html_part)
     msg.send()
 
