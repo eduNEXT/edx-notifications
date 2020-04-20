@@ -323,7 +323,7 @@ def send_notifications_namespace_digest(namespace, from_timestamp, to_timestamp,
             pass
 
         if user_wants_digest:
-            log.debug(
+            log.info(
                 'Sending digest email from namespace "%s" to user_id = %s at email %s...',
                 namespace, user_id, email
             )
@@ -393,7 +393,7 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     # As an option, don't send an email at all if there are no
     # unread notifications
     if not notification_groups and const.NOTIFICATION_DONT_SEND_EMPTY_DIGEST:
-        log.debug('Digest email for %s is empty. Not sending...', email)
+        log.info('Digest email for %s is empty. Not sending...', email)
         return 0
 
     context = {
@@ -434,6 +434,7 @@ def _send_user_digest(namespace_info, from_timestamp, to_timestamp, user_id,
     subject = subject.format(display_name=namespace_info['display_name'])
 
     msg = EmailMessage(subject, '', from_email, [email])
+    log.info('from_email: %s', from_email)
     msg.attach(html_part)
     msg.send()
 

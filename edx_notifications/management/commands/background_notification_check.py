@@ -16,20 +16,20 @@ from edx_notifications.background import fire_background_notification_check
 # Have all logging go to stdout with management commands
 # this must be up at the top otherwise the
 # configuration does not appear to take affect
-LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-        }
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO'
-    }
-}
-logging.config.dictConfig(LOGGING)
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'stream': sys.stdout,
+#         }
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'INFO'
+#     }
+# }
+# logging.config.dictConfig(LOGGING)
 
 
 log = logging.getLogger(__file__)
